@@ -1,0 +1,3 @@
+Set N = 5000 to go faster (R = 10, L = 1000, N = 100000 <=> ~15mins)
+roomba should be found quickly (R = 10, L = 1000, N = 100000 <=> ~1min)
+hash_many (target.txt -> output.txt)
