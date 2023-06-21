@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ImageButton
+        android:id="@+id/rules_retour"
+        style="@style/Button"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/back"
+        app:srcCompat="@android:drawable/ic_menu_revert" />
+
+    <ImageView
+        android:id="@+id/ruleImg"
+        android:layout_width="wrap_content"
+        android:layout_height="506dp"
+        android:src="@drawable/rule1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/rules_page_retour"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/back_arrow" />
+
+        <Button
+            android:id="@+id/rules_page_next"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/next_arrow" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

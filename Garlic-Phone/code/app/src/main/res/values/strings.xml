@@ -1,0 +1,30 @@
+<resources>
+<string name="app_name">Dessine It</string>
+    <string name="regles">Rules</string>
+    <string name="rejoindre">Join</string>
+    <string name="heberger">Host</string>
+    <string name="start">Start</string>
+    <string name="pret">Ready</string>
+
+    <string name="joinActivity_code_hint">Room code</string>
+    <string name="joinActivity_pseudo_hint">Username</string>
+
+    <string name="host_activity_status">State</string>
+
+
+    <string name="back_arrow">&lt;-</string>
+    <string name="next_arrow">-></string>
+
+    <string name="image_sent">Image sent</string>
+
+    <string name="entrer_text">Enter</string>
+    <string name="valider_text">Valid</string>
+
+    <string name="game_session_start">What shall I make them guess?</string>
+    <string name="describe_image_activity_suggestion">What is it?</string>
+
+    <string name="conn_error_text">Connection error</string>
+    <string name="go_text">Go!</string>
+    <string name="back">Back</string>
+    <string name="endOfTheGame">Game ended</string>
+</resources>

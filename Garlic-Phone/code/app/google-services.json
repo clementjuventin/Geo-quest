@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "232187401022",
+    "project_id": "applicationdessineitandroid",
+    "storage_bucket": "applicationdessineitandroid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232187401022:android:717406494365af5b0e526f",
+        "android_client_info": {
+          "package_name": "iut.cours.tp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232187401022-m25uv1fsbhakb4a1ggepgo8odvc3p0hm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk8twoHXoxM2h5AeLVz7RLX0TzgXUU_Ic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232187401022-m25uv1fsbhakb4a1ggepgo8odvc3p0hm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

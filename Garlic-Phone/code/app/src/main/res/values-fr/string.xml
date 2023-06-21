@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Dessine It</string>
+    <string name="regles">Règles</string>
+    <string name="rejoindre">Rejoindre</string>
+    <string name="heberger">Héberger</string>
+    <string name="start">Commencer</string>
+    <string name="pret">Prêt</string>
+
+    <string name="joinActivity_code_hint">Code du salon</string>
+    <string name="joinActivity_pseudo_hint">Pseudonyme</string>
+
+    <string name="host_activity_status">Status</string>
+
+    <string name="image_sent">Image envoyée</string>
+
+    <string name="back_arrow">&lt;-</string>
+    <string name="next_arrow">-></string>
+
+    <string name="entrer_text">Entrer</string>
+    <string name="valider_text">Valider</string>
+
+    <string name="game_session_start">Que vais-je faire deviner?</string>
+    <string name="describe_image_activity_suggestion">Qu\'est ce que c\'est?</string>
+
+    <string name="conn_error_text">Erreur de connexion</string>
+    <string name="go_text">Go!</string>
+    <string name="back">Retour</string>
+    <string name="endOfTheGame">Fin de la partie</string>
+</resources>
