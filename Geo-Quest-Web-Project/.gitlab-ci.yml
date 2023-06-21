@@ -1,0 +1,113 @@
+# Definition de l'image docker pour le runner
+image: node:18 # On choisi une image avec node et donc npm, qui sera utilisee pour tout les jobs, sauf indication contraire.
+
+# Definition des etapes
+stages: # On defini les etapes et leur ordre pour la pipeline
+  - build
+  - test-backend
+  - deploy-backend
+  - test-frontend
+  - deploy-frontend
+  - badge-gen
+
+# Definition du cache
+variables: # On definit queqlues variables pour pointer vers le cache
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+
+cache: # On defini un cache pour les packages de npm ; cela permettra de ne pas a les re-telecharger entre plusieurs lancement de la pipeline si ils n'ont pas changé
+  key: ${CI_COMMIT_REF_SLUG}
+  policy: pull
+  paths:
+    - .npm
+    - cache/Cypress
+    - node_modules
+
+# Definition des jobs
+# Jobs de build
+dl-npm-pkgs: # On defini un job qui s'occupe d'installer les packages npm nécessaires
+  image: cypress/base:16.18.1
+  stage: build # Il s'execute durant l'etape de build
+  cache: # Configuration du cache de .npm
+    - key: ${CI_COMMIT_REF_SLUG}
+      when: on_success
+      paths:
+        - .npm
+        - cache/Cypress
+        - node_modules
+      policy: pull-push
+  script: # Commande pour installer les packages en preferant le cache si possible
+    - cd back
+    - npm i
+    - cd ../app
+    - npm i
+    - npm ci --cache .npm --prefer-offline
+    - npx cypress cache path
+    - npx cypress cache list
+    - npm run cy:verify
+    - npm run cy:info
+
+jobjest:
+  stage: test-backend # Ce job s'execute durant l'etape de test
+  script:
+   - cd back
+   - npm i
+   - npm run updatedb
+   - npx jest
+   - npm run doc
+  artifacts:
+    untracked: false
+    when: always
+    paths:
+      - mochawesome-report
+
+# Job pour exposer l'API sur Scalingo
+# URL d'exposition de l'API : https://geoquest.osc-fr1.scalingo.io/api
+scalingo:
+  stage: deploy-backend
+  tags:
+    - docker
+  variables:
+    # SCALINGO_API_TOKEN # variable à ne pas définir en clair ici (cf instructions à la fin du .gitlab-ci.yml ci-dessous)
+    SCALINGO_APP_NAME: geoquest # le nom de votre appli chez scalingo
+    SCALINGO_REGION: osc-fr1 # l'instance de scalingo sur laquelle votre appli est déployée
+    GIT_DEPTH: 0
+    PROJECT_DIR: back # Le répertoire dans le dépôt où est le backend
+  image: ruby:3.1.3 # car dpl est codé en Ruby
+  script:
+    - rm back/package-lock.json
+    - gem install dpl --pre # gem est le gestionnaire de paquets pour Ruby
+    - curl -O https://cli-dl.scalingo.com/install && bash install # scalingo CLI est installé
+    - scalingo --app=$SCALINGO_APP_NAME env-set PROJECT_DIR=$PROJECT_DIR # Pour indiquer sur le dépôt distant où est le backend (s'il est à la racine du projet ceci est facultatif, et il est possible de le faire une fois pour toute directement dans l'interface web de scalingo)
+    - dpl --provider=scalingo --app=$SCALINGO_APP_NAME --api-token=$SCALINGO_API_TOKEN --region=$SCALINGO_REGION --branch=refs/heads/main
+    # la variable SCALINGO_API_TOKEN contient le token que vous avez généré chez scalingo via le menu `User Settings > API tokens`
+    #
+    # Afin que la variable SCALINGO_API_TOKEN n'apparaissent pas en clair sur notre dépôt public gitlab, on définit cette variable via
+    # le menu `Settings > CI/CD > Variables` et on la masque dans le résultat des logs des jobs en lui appliquant la propriété "Masked"
+    # Plus de détails sur https://docs.gitlab.com/ee/ci/variables/index.html.
+  only:
+    - scalingo
+
+# Jobs de test
+jobcypress:
+  stage: test-frontend # Ce job s'execute durant l'etape de test
+  tags:
+    - docker # Comme on utilise une image pour isoler on doit utiliser un runner docker
+  image: cypress/base:16.18.1 # Image fournie par cypress avec ce qu'il faut
+  script:
+   - cd back
+   - npm i
+   - npm install serve
+   - npm run updatedb
+   - ./node_modules/.bin/serve -l 5000 -s build &
+   - cd ../app
+   - npm i # Installe ce qui est décrit dans package.json
+   - npm run web &
+   - sleep 30
+   - ./node_modules/.bin/cypress run > ./cypress_report.txt # Lance les tests
+   - kill -9 $(ps | grep node | awk '{print $1}') # Cette ligne permet de tuer serve
+  artifacts:
+    untracked: false
+    when: always
+    paths:
+      - mochawesome-report

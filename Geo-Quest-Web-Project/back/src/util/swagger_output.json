@@ -1,0 +1,1055 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.1.0",
+    "title": "GeoQuest API",
+    "description": "This is the wonderfull <b>GeoQuest</b> API."
+  },
+  "host": "geoquest.osc-fr1.scalingo.io",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Manage the user login and registration."
+    },
+    {
+      "name": "Quest",
+      "description": "Manage the quest objects."
+    },
+    {
+      "name": "Location",
+      "description": "Manage the location objects."
+    },
+    {
+      "name": "Score",
+      "description": "Get the game related date."
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/signin": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Verify credentials of user using the username and password. Return a token",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "body",
+            "description": "The username of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "chad"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "description": "The password of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "not_hashed_pass"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sign in succeed",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Wrong arguments (missing username or password)"
+          },
+          "403": {
+            "description": "Invalid username or password"
+          }
+        }
+      }
+    },
+    "/api/signup": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create a new user. Return a token",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "body",
+            "description": "The username of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "chad"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "description": "The password of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "not_hashed_pass"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sign up succeed",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Wrong arguments (missing username or password)"
+          },
+          "403": {
+            "description": "Username already taken"
+          }
+        }
+      }
+    },
+    "/api/addquest": {
+      "post": {
+        "tags": [
+          "Quest"
+        ],
+        "summary": "Create a new quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": "The name of the quest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "My quest"
+            }
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "description": "The description of the quest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "This is my first quest"
+            }
+          },
+          {
+            "name": "enddate",
+            "in": "body",
+            "description": "The end date of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1680021654"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return the created quest",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "example": 6
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "TfcYFJfEgeGrn2dne4wI1onULOkERFfJ"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "My quest"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "This is my first quest"
+                    },
+                    "active": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "img": {
+                      "type": "string",
+                      "example": "https://image.png"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "example": "1680021654"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId, name or description)"
+          },
+          "403": {
+            "description": "User does not exist"
+          }
+        }
+      }
+    },
+    "/api/getquests": {
+      "post": {
+        "tags": [
+          "Quest"
+        ],
+        "summary": "Get some quests by their codes. If some codes are invalid, they are ignored",
+        "description": "",
+        "parameters": [
+          {
+            "name": "codes",
+            "in": "body",
+            "description": "Codes of quests",
+            "schema": {
+              "type": "array",
+              "example": [
+                "12345678901234567890123456789012",
+                "12345678901234567890123456789013"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return the quests",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Quest"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing codes)"
+          }
+        }
+      }
+    },
+    "/api/editquest": {
+      "put": {
+        "tags": [
+          "Quest"
+        ],
+        "summary": "Edit a quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "3"
+            }
+          },
+          {
+            "name": "questId",
+            "in": "body",
+            "description": "The id of the quest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": "The name of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "My quest"
+            }
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "description": "The description of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "This is my first quest"
+            }
+          },
+          {
+            "name": "active",
+            "in": "body",
+            "description": "The active state of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "true"
+            }
+          },
+          {
+            "name": "img",
+            "in": "body",
+            "description": "The image of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "https://image.png"
+            }
+          },
+          {
+            "name": "enddate",
+            "in": "body",
+            "description": "The end date of the quest",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1680021654"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return the updated quest",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Quest"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId or questId)"
+          },
+          "403": {
+            "description": "User is not the owner or the quest does not exist"
+          }
+        }
+      }
+    },
+    "/api/deletequest": {
+      "delete": {
+        "tags": [
+          "Quest"
+        ],
+        "summary": "Delete a quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "3"
+            }
+          },
+          {
+            "name": "questId",
+            "in": "body",
+            "description": "The id of the quest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId or questId)"
+          },
+          "403": {
+            "description": "User is not the owner or the quest does not exist"
+          }
+        }
+      }
+    },
+    "/api/getlocations/{questId}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Returns the locations associated to a quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "questId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The id of the quest",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "type": "integer",
+            "description": "The id of the user, if referenced it also return the location codes",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return the locations",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Location"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing questId)"
+          },
+          "403": {
+            "description": "The quest or user does not exist"
+          }
+        }
+      }
+    },
+    "/api/claimlocation": {
+      "post": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Claim a location",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "code",
+            "in": "body",
+            "description": "The code of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "5912"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Claim location"
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId or code)"
+          },
+          "403": {
+            "description": "The user, quest, location does not exist, the quest is inactive, the location is already claimed or the owner cannot claim his location"
+          }
+        }
+      }
+    },
+    "/api/addlocation": {
+      "post": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Create a location associated to a quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "questId",
+            "in": "body",
+            "description": "The id of the quest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": "The name of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Fountain"
+            }
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "description": "The description of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Angel s Fountain"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "body",
+            "description": "The latitude of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "25.63"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "body",
+            "description": "The longitude of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "59.12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return the location",
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing questId, name, description, longitude or latitude)"
+          },
+          "403": {
+            "description": "The quest does not exist"
+          }
+        }
+      }
+    },
+    "/api/editlocation": {
+      "put": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Return the locations associated to a quest",
+        "description": "",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "body",
+            "description": "The id of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "description": "The description of the location",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "This is a new description"
+            }
+          },
+          {
+            "name": "latitude",
+            "in": "body",
+            "description": "The latitude of the location",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "12.1234"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "body",
+            "description": "The longitude of the location",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "17.1234"
+            }
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": "The name of the location",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "New name"
+            }
+          },
+          {
+            "name": "img",
+            "in": "body",
+            "description": "The img of the location",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "image_url"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Invalid arguments"
+          },
+          "403": {
+            "description": "The location/user does not exist, the user is not the owner of the quest or the quest is already active"
+          }
+        }
+      }
+    },
+    "/api/removelocation": {
+      "delete": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Remove a location",
+        "description": "",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "body",
+            "description": "The id of the location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "3"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "body",
+            "description": "The id of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Remove the location",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Location has been deleted"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing locationId or userId)"
+          },
+          "403": {
+            "description": "The location or user does not exist, the user is not the owner of the quest or the quest is active"
+          }
+        }
+      }
+    },
+    "/api/getlocationhistory/{userId}": {
+      "get": {
+        "tags": [
+          "Score"
+        ],
+        "summary": "Returns last locations associated to a user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "params",
+            "required": true,
+            "type": "integer",
+            "description": "The id of the user",
+            "schema": {
+              "type": "string",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return locations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "locationId": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "locationName": {
+                            "type": "string",
+                            "example": "Arc de triomphe"
+                          },
+                          "claimDate": {
+                            "type": "string",
+                            "example": "2001-01-01T00:00:00.000Z"
+                          },
+                          "img": {
+                            "type": "string",
+                            "example": "image_url"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId)"
+          },
+          "403": {
+            "description": "User does not exist"
+          }
+        }
+      }
+    },
+    "/api/getscore/{userId}": {
+      "get": {
+        "tags": [
+          "Score"
+        ],
+        "summary": "Get score of a player",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "params",
+            "required": true,
+            "type": "integer",
+            "description": "The id of the user",
+            "schema": {
+              "type": "string",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return score",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "type": "number",
+                  "example": 2
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId)"
+          },
+          "403": {
+            "description": "The user does not exist"
+          }
+        }
+      }
+    },
+    "/api/getrank/{userId}": {
+      "get": {
+        "tags": [
+          "Score"
+        ],
+        "summary": "Returns rank of player",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return rank",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "number",
+                      "example": 23
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing userId)"
+          },
+          "403": {
+            "description": "The user does not exist"
+          }
+        }
+      }
+    },
+    "/api/getranking/{limit}": {
+      "get": {
+        "tags": [
+          "Score"
+        ],
+        "summary": "Returns the :limit: top players. Limit must be between 1 and 25",
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Return ranking",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "ranking": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "score": {
+                            "type": "number",
+                            "example": 21
+                          },
+                          "username": {
+                            "type": "string",
+                            "example": "chad"
+                          },
+                          "id": {
+                            "type": "number",
+                            "example": 9
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid arguments (missing limit)"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 2
+        },
+        "username": {
+          "type": "string",
+          "example": "user_name"
+        },
+        "creationDate": {
+          "type": "string",
+          "example": "2001-01-01T00:00:00.000Z"
+        },
+        "token": {
+          "type": "string",
+          "example": "user_token"
+        }
+      }
+    },
+    "Quest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "code": {
+          "type": "string",
+          "example": "TfcYFJfEgeGrn2dne4wI1onULOkERFfJ"
+        },
+        "name": {
+          "type": "string",
+          "example": "My quest"
+        },
+        "description": {
+          "type": "string",
+          "example": "This is my first quest"
+        },
+        "active": {
+          "type": "boolean",
+          "example": true
+        },
+        "img": {
+          "type": "string",
+          "example": "image_url"
+        },
+        "endDate": {
+          "type": "string",
+          "example": "1680021654"
+        }
+      }
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "My location"
+        },
+        "description": {
+          "type": "string",
+          "example": "My location description"
+        },
+        "latitude": {
+          "type": "number",
+          "example": 2.3
+        },
+        "longitude": {
+          "type": "number",
+          "example": 12.5
+        },
+        "questId": {
+          "type": "number",
+          "example": 1
+        },
+        "code": {
+          "type": "string",
+          "example": "given_only_for_owners"
+        },
+        "img": {
+          "type": "string",
+          "example": "image_url"
+        }
+      }
+    }
+  }
+}
